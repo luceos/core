@@ -13,7 +13,7 @@ namespace Flarum\Event;
 
 use Flarum\Extension\Extension;
 
-class ExtensionWasUninstalled
+class ExtensionWillBeEnabled
 {
     /**
      * @var Extension

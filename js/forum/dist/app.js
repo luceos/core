@@ -22162,6 +22162,108 @@ System.register('flarum/components/DiscussionRenamedPost', ['flarum/components/E
 });;
 'use strict';
 
+System.register('flarum/components/DiscussionRenameModal', ['flarum/components/Modal', 'flarum/components/Button'], function (_export, _context) {
+  "use strict";
+
+  var Modal, Button, DiscussionRenameModal;
+  return {
+    setters: [function (_flarumComponentsModal) {
+      Modal = _flarumComponentsModal.default;
+    }, function (_flarumComponentsButton) {
+      Button = _flarumComponentsButton.default;
+    }],
+    execute: function () {
+      DiscussionRenameModal = function (_Modal) {
+        babelHelpers.inherits(DiscussionRenameModal, _Modal);
+
+        function DiscussionRenameModal() {
+          babelHelpers.classCallCheck(this, DiscussionRenameModal);
+          return babelHelpers.possibleConstructorReturn(this, (DiscussionRenameModal.__proto__ || Object.getPrototypeOf(DiscussionRenameModal)).apply(this, arguments));
+        }
+
+        babelHelpers.createClass(DiscussionRenameModal, [{
+          key: 'init',
+          value: function init() {
+            babelHelpers.get(DiscussionRenameModal.prototype.__proto__ || Object.getPrototypeOf(DiscussionRenameModal.prototype), 'init', this).call(this);
+
+            this.discussion = this.props.discussion;
+            this.currentTitle = this.props.currentTitle;
+            this.newTitle = m.prop(this.currentTitle);
+          }
+        }, {
+          key: 'className',
+          value: function className() {
+            return 'DiscussionRenameModal Modal--small';
+          }
+        }, {
+          key: 'title',
+          value: function title() {
+            return app.translator.trans('core.forum.discussion_controls.rename_modal.title');
+          }
+        }, {
+          key: 'content',
+          value: function content() {
+            return m(
+              'div',
+              { className: 'Modal-body' },
+              m(
+                'div',
+                { className: 'Form' },
+                m(
+                  'div',
+                  { className: 'Form-group' },
+                  m('input', { className: 'FormControl title', placeholder: this.currentTitle, bidi: this.newTitle })
+                ),
+                m(
+                  'div',
+                  { className: 'Form-group' },
+                  Button.component({
+                    className: 'Button Button--primary',
+                    type: 'submit',
+                    loading: this.loading,
+                    children: app.translator.trans('core.forum.discussion_controls.rename_modal.submit_button')
+                  })
+                )
+              )
+            );
+          }
+        }, {
+          key: 'onsubmit',
+          value: function onsubmit(e) {
+            var _this2 = this;
+
+            e.preventDefault();
+
+            this.loading = true;
+
+            var title = this.newTitle;
+            var currentTitle = this.currentTitle;
+
+            // If the title is different to what it was before, then save it. After the
+            // save has completed, update the post stream as there will be a new post
+            // indicating that the discussion was renamed.
+            if (title && title !== currentTitle) {
+              return this.discussion.save({ title: title }).then(function () {
+                if (app.viewingDiscussion(_this2.discussion)) {
+                  app.current.stream.update();
+                }
+                m.redraw();
+                _this2.hide();
+              });
+            } else {
+              this.hide();
+            }
+          }
+        }]);
+        return DiscussionRenameModal;
+      }(Modal);
+
+      _export('default', DiscussionRenameModal);
+    }
+  };
+});;
+'use strict';
+
 System.register('flarum/components/DiscussionsSearchSource', ['flarum/helpers/highlight', 'flarum/components/LinkButton'], function (_export, _context) {
   "use strict";
 
@@ -22583,6 +22685,7 @@ System.register('flarum/components/EditUserModal', ['flarum/components/Modal', '
 
             this.username = m.prop(user.username() || '');
             this.email = m.prop(user.email() || '');
+            this.isActivated = m.prop(user.isActivated() || false);
             this.setPassword = m.prop(false);
             this.password = m.prop(user.password() || '');
             this.groups = {};
@@ -22620,7 +22723,7 @@ System.register('flarum/components/EditUserModal', ['flarum/components/Modal', '
                   m(
                     'label',
                     null,
-                    'Username'
+                    app.translator.trans('core.forum.edit_user.username_heading')
                   ),
                   m('input', { className: 'FormControl', placeholder: extractText(app.translator.trans('core.forum.edit_user.username_label')),
                     bidi: this.username })
@@ -22631,21 +22734,31 @@ System.register('flarum/components/EditUserModal', ['flarum/components/Modal', '
                   m(
                     'label',
                     null,
-                    'Email'
+                    app.translator.trans('core.forum.edit_user.email_heading')
                   ),
                   m(
                     'div',
                     null,
                     m('input', { className: 'FormControl', placeholder: extractText(app.translator.trans('core.forum.edit_user.email_label')),
                       bidi: this.email })
-                  )
+                  ),
+                  !this.isActivated() ? m(
+                    'div',
+                    null,
+                    Button.component({
+                      className: 'Button Button--block',
+                      children: app.translator.trans('core.forum.edit_user.activate_button'),
+                      loading: this.loading,
+                      onclick: this.activate.bind(this)
+                    })
+                  ) : ''
                 ), m(
                   'div',
                   { className: 'Form-group' },
                   m(
                     'label',
                     null,
-                    'Password'
+                    app.translator.trans('core.forum.edit_user.password_heading')
                   ),
                   m(
                     'div',
@@ -22659,7 +22772,7 @@ System.register('flarum/components/EditUserModal', ['flarum/components/Modal', '
                           if (e.target.checked) _this3.$('[name=password]').select();
                           m.redraw.strategy('none');
                         } }),
-                      'Set new password'
+                      app.translator.trans('core.forum.edit_user.set_password_label')
                     ),
                     this.setPassword() ? m('input', { className: 'FormControl', type: 'password', name: 'password', placeholder: extractText(app.translator.trans('core.forum.edit_user.password_label')),
                       bidi: this.password }) : ''
@@ -22671,7 +22784,7 @@ System.register('flarum/components/EditUserModal', ['flarum/components/Modal', '
                   m(
                     'label',
                     null,
-                    'Groups'
+                    app.translator.trans('core.forum.edit_user.groups_heading')
                   ),
                   m(
                     'div',
@@ -22706,12 +22819,31 @@ System.register('flarum/components/EditUserModal', ['flarum/components/Modal', '
             );
           }
         }, {
-          key: 'data',
-          value: function data() {
+          key: 'activate',
+          value: function activate() {
             var _this4 = this;
 
+            this.loading = true;
+            var data = {
+              username: this.username(),
+              isActivated: true
+            };
+            this.props.user.save(data, { errorHandler: this.onerror.bind(this) }).then(function () {
+              _this4.isActivated(true);
+              _this4.loading = false;
+              m.redraw();
+            }).catch(function () {
+              _this4.loading = false;
+              m.redraw();
+            });
+          }
+        }, {
+          key: 'data',
+          value: function data() {
+            var _this5 = this;
+
             var groups = Object.keys(this.groups).filter(function (id) {
-              return _this4.groups[id]();
+              return _this5.groups[id]();
             }).map(function (id) {
               return app.store.getById('groups', id);
             });
@@ -22734,14 +22866,14 @@ System.register('flarum/components/EditUserModal', ['flarum/components/Modal', '
         }, {
           key: 'onsubmit',
           value: function onsubmit(e) {
-            var _this5 = this;
+            var _this6 = this;
 
             e.preventDefault();
 
             this.loading = true;
 
             this.props.user.save(this.data(), { errorHandler: this.onerror.bind(this) }).then(this.hide.bind(this)).catch(function () {
-              _this5.loading = false;
+              _this6.loading = false;
               m.redraw();
             });
           }
@@ -22982,12 +23114,6 @@ System.register('flarum/components/ForgotPasswordModal', ['flarum/components/Mod
                     value: this.email(),
                     onchange: m.withAttr('value', this.email),
                     disabled: this.loading })
-                ),
-                m(
-                  'label',
-                  { className: 'checkbox' },
-                  m('input', { name: 'remember', type: 'checkbox', bidi: this.remember, disabled: this.loading }),
-                  app.translator.trans('core.forum.log_in.remember_me_text')
                 ),
                 m(
                   'div',
@@ -23512,7 +23638,11 @@ System.register('flarum/components/IndexPage', ['flarum/extend', 'flarum/compone
               icon: 'refresh',
               className: 'Button Button--icon',
               onclick: function onclick() {
-                return app.cache.discussionList.refresh();
+                app.cache.discussionList.refresh();
+                if (app.session.user) {
+                  app.store.find('users', app.session.user.id());
+                  m.redraw();
+                }
               }
             }));
 
@@ -23935,6 +24065,12 @@ System.register('flarum/components/LogInModal', ['flarum/components/Modal', 'fla
                   m('input', { className: 'FormControl', name: 'password', type: 'password', placeholder: extractText(app.translator.trans('core.forum.log_in.password_placeholder')),
                     bidi: this.password,
                     disabled: this.loading })
+                ),
+                m(
+                  'label',
+                  { className: 'checkbox' },
+                  m('input', { name: 'remember', type: 'checkbox', bidi: this.remember, disabled: this.loading }),
+                  app.translator.trans('core.forum.log_in.remember_me_label')
                 ),
                 m(
                   'div',
@@ -29559,6 +29695,10 @@ System.register('flarum/initializers/boot', ['flarum/utils/ScrollListener', 'fla
       if (e.ctrlKey || e.metaKey || e.which === 2) return;
       e.preventDefault();
       app.history.home();
+      if (app.session.user) {
+        app.store.find('users', app.session.user.id());
+        m.redraw();
+      }
     });
 
     // Add a class to the body which indicates that the page has been scrolled
@@ -31140,10 +31280,10 @@ System.register('flarum/utils/computed', [], function (_export, _context) {
 });;
 'use strict';
 
-System.register('flarum/utils/DiscussionControls', ['flarum/components/DiscussionPage', 'flarum/components/ReplyComposer', 'flarum/components/LogInModal', 'flarum/components/Button', 'flarum/components/Separator', 'flarum/utils/ItemList', 'flarum/utils/extractText'], function (_export, _context) {
+System.register('flarum/utils/DiscussionControls', ['flarum/components/DiscussionPage', 'flarum/components/ReplyComposer', 'flarum/components/LogInModal', 'flarum/components/Button', 'flarum/components/Separator', 'flarum/components/DiscussionRenameModal', 'flarum/utils/ItemList', 'flarum/utils/extractText'], function (_export, _context) {
   "use strict";
 
-  var DiscussionPage, ReplyComposer, LogInModal, Button, Separator, ItemList, extractText;
+  var DiscussionPage, ReplyComposer, LogInModal, Button, Separator, DiscussionRenameModal, ItemList, extractText;
   return {
     setters: [function (_flarumComponentsDiscussionPage) {
       DiscussionPage = _flarumComponentsDiscussionPage.default;
@@ -31155,6 +31295,8 @@ System.register('flarum/utils/DiscussionControls', ['flarum/components/Discussio
       Button = _flarumComponentsButton.default;
     }, function (_flarumComponentsSeparator) {
       Separator = _flarumComponentsSeparator.default;
+    }, function (_flarumComponentsDiscussionRenameModal) {
+      DiscussionRenameModal = _flarumComponentsDiscussionRenameModal.default;
     }, function (_flarumUtilsItemList) {
       ItemList = _flarumUtilsItemList.default;
     }, function (_flarumUtilsExtractText) {
@@ -31303,22 +31445,10 @@ System.register('flarum/utils/DiscussionControls', ['flarum/components/Discussio
           }
         },
         renameAction: function renameAction() {
-          var _this3 = this;
-
-          var currentTitle = this.title();
-          var title = prompt(extractText(app.translator.trans('core.forum.discussion_controls.rename_text')), currentTitle);
-
-          // If the title is different to what it was before, then save it. After the
-          // save has completed, update the post stream as there will be a new post
-          // indicating that the discussion was renamed.
-          if (title && title !== currentTitle) {
-            return this.save({ title: title }).then(function () {
-              if (app.viewingDiscussion(_this3)) {
-                app.current.stream.update();
-              }
-              m.redraw();
-            });
-          }
+          return app.modal.show(new DiscussionRenameModal({
+            currentTitle: this.title(),
+            discussion: this
+          }));
         }
       });
     }
