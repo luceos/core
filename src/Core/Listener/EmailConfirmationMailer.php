@@ -13,7 +13,6 @@ namespace Flarum\Core\Listener;
 
 use Flarum\Core\EmailToken;
 use Flarum\Core\Jobs\MailJob;
-use Flarum\Core\Support\DispatchJobsTrait;
 use Flarum\Core\User;
 use Flarum\Event\UserEmailChangeWasRequested;
 use Flarum\Event\UserWasRegistered;
@@ -26,7 +25,6 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 class EmailConfirmationMailer
 {
-    use DispatchJobsTrait;
     /**
      * @var SettingsRepositoryInterface
      */
@@ -87,7 +85,7 @@ class EmailConfirmationMailer
 
         $body = $this->translator->trans('core.email.activate_account.body', $data);
 
-        $this->dispatch(new MailJob(
+        $this->queue->dispatch(new MailJob(
             '['.$data['{forum}'].'] '.$this->translator->trans('core.email.activate_account.subject'),
             $body,
             $user->email
