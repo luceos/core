@@ -2,9 +2,9 @@ import Modal from 'flarum/components/Modal';
 import Button from 'flarum/components/Button';
 
 /**
- * The 'DiscussionRenameModal' displays a modal dialog with an input to rename a discussion
+ * The 'RenameDiscussionModal' displays a modal dialog with an input to rename a discussion
  */
-export default class DiscussionRenameModal extends Modal {
+export default class RenameDiscussionModal extends Modal {
   init() {
     super.init();
 
@@ -14,11 +14,11 @@ export default class DiscussionRenameModal extends Modal {
   }
 
   className() {
-    return 'DiscussionRenameModal Modal--small';
+    return 'RenameDiscussionModal Modal--small';
   }
 
   title() {
-    return app.translator.trans('core.forum.discussion_controls.rename_modal.title');
+    return app.translator.trans('core.forum.discussion_controls.rename_discussion.title');
   }
 
   content() {
@@ -33,7 +33,7 @@ export default class DiscussionRenameModal extends Modal {
               className: 'Button Button--primary',
               type: 'submit',
               loading: this.loading,
-              children: app.translator.trans('core.forum.discussion_controls.rename_modal.submit_button')
+              children: app.translator.trans('core.forum.discussion_controls.rename_discussion.submit_button')
             })}
           </div>
         </div>
