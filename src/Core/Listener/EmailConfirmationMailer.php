@@ -102,7 +102,7 @@ class EmailConfirmationMailer
 
         $body = $this->translator->trans('core.email.confirm_email.body', $data);
 
-        $this->dispatch(new MailJob(
+        $this->queue->dispatch(new MailJob(
             '['.$data['{forum}'].'] '.$this->translator->trans('core.email.confirm_email.subject'),
             $body,
             $email
