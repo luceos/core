@@ -11,8 +11,12 @@
          syntaxCheck="false">
 
     <testsuites>
+        <testsuite name="installation">
+            <directory suffix="Test.php">./tests/unit/Install/</directory>
+        </testsuite>
         <testsuite name="all">
-            <directory suffix="Test.php">./tests</directory>
+            <directory suffix="Test.php">./tests/unit/</directory>
+            <exclude>./tests/unit/Install</exclude>
         </testsuite>
     </testsuites>
 

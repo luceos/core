@@ -14,7 +14,7 @@ namespace Tests\Flarum\Api\Handler;
 use Exception;
 use Flarum\Api\ExceptionHandler\RouteNotFoundExceptionHandler;
 use Flarum\Http\Exception\RouteNotFoundException;
-use Tests\Test\TestCase;
+use Flarum\Tests\TestCase;
 
 class RouteNotFoundExceptionHandlerTest extends TestCase
 {

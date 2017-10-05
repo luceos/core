@@ -14,7 +14,7 @@ namespace Tests\Flarum\Api\Handler;
 use Exception;
 use Flarum\Api\ExceptionHandler\MethodNotAllowedExceptionHandler;
 use Flarum\Http\Exception\MethodNotAllowedException;
-use Tests\Test\TestCase;
+use Flarum\Tests\TestCase;
 
 class MethodNotAllowedExceptionHandlerTest extends TestCase
 {

@@ -737,4 +737,19 @@ class Application extends Container implements ApplicationContract
 
         $this->loadedProviders = [];
     }
+
+    /**
+     * Get the path to the cached packages.php file.
+     *
+     * @return string
+     */
+    public function getCachedPackagesPath()
+    {
+        return storage_path('cache/packages');
+    }
+
+    public function resourcePath()
+    {
+        return storage_path('resources');
+    }
 }

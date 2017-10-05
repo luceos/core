@@ -9,16 +9,21 @@
  * file that was distributed with this source code.
  */
 
-namespace Tests\Test;
+namespace Flarum\Tests;
 
+use Flarum\Tests\Concerns\CreatesForum;
 use Mockery;
 use PHPUnit\Framework\TestCase as Test;
 
 abstract class TestCase extends Test
 {
+    use CreatesForum;
+
     public function setUp()
     {
         Mockery::close();
+
+        $this->setUpForum();
 
         $this->init();
     }

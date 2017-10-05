@@ -14,7 +14,7 @@ namespace Tests\Flarum\Core\Settings;
 use Flarum\Settings\DatabaseSettingsRepository;
 use Illuminate\Database\ConnectionInterface;
 use Mockery as m;
-use Tests\Test\TestCase;
+use Flarum\Tests\TestCase;
 
 class DatabaseSettingsRepositoryTest extends TestCase
 {

@@ -14,7 +14,7 @@ namespace Tests\Flarum\Api\Handler;
 use Exception;
 use Flarum\Api\ExceptionHandler\ModelNotFoundExceptionHandler;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Tests\Test\TestCase;
+use Flarum\Tests\TestCase;
 
 class ModelNotFoundExceptionHandlerTest extends TestCase
 {

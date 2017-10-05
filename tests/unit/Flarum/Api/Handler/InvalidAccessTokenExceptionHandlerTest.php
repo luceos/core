@@ -12,34 +12,34 @@
 namespace Tests\Flarum\Api\Handler;
 
 use Exception;
-use Flarum\Api\ExceptionHandler\PermissionDeniedExceptionHandler;
-use Flarum\User\Exception\PermissionDeniedException;
-use Tests\Test\TestCase;
+use Flarum\Api\Exception\InvalidAccessTokenException;
+use Flarum\Api\ExceptionHandler\InvalidAccessTokenExceptionHandler;
+use Flarum\Tests\TestCase;
 
-class PermissionDeniedExceptionHandlerTest extends TestCase
+class InvalidAccessTokenExceptionHandlerTest extends TestCase
 {
     private $handler;
 
     public function init()
     {
-        $this->handler = new PermissionDeniedExceptionHandler;
+        $this->handler = new InvalidAccessTokenExceptionHandler;
     }
 
     public function test_it_handles_recognisable_exceptions()
     {
         $this->assertFalse($this->handler->manages(new Exception));
-        $this->assertTrue($this->handler->manages(new PermissionDeniedException));
+        $this->assertTrue($this->handler->manages(new InvalidAccessTokenException));
     }
 
-    public function test_managing_exceptions()
+    public function test_output()
     {
-        $response = $this->handler->handle(new PermissionDeniedException);
+        $response = $this->handler->handle(new InvalidAccessTokenException);
 
         $this->assertEquals(401, $response->getStatus());
         $this->assertEquals([
             [
                 'status' => '401',
-                'code' => 'permission_denied'
+                'code' => 'invalid_access_token'
             ]
         ], $response->getErrors());
     }

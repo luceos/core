@@ -14,7 +14,7 @@ namespace Tests\Flarum\Api\Handler;
 use Exception;
 use Flarum\Api\ExceptionHandler\InvalidConfirmationTokenExceptionHandler;
 use Flarum\User\Exception\InvalidConfirmationTokenException;
-use Tests\Test\TestCase;
+use Flarum\Tests\TestCase;
 
 class InvalidConfirmationTokenExceptionHandlerTest extends TestCase
 {

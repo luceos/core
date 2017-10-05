@@ -20,9 +20,21 @@ use Flarum\Foundation\Site;
 use Flarum\Install\Console\InstallCommand;
 use Flarum\Install\InstallServiceProvider;
 use Symfony\Component\Console\Application as ConsoleApplication;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class Server
 {
+    /**
+     * @var Application
+     */
+    protected $app;
+
+    public function __construct(Application $app)
+    {
+        $this->app = $app;
+    }
+
     /**
      * @param Site $site
      * @return Server
@@ -32,16 +44,15 @@ class Server
         return new static($site->boot());
     }
 
-    public function __construct(Application $app)
-    {
-        $this->app = $app;
-    }
-
-    public function listen()
+    /**
+     * @param InputInterface|null $input
+     * @param OutputInterface|null $output
+     */
+    public function listen(InputInterface $input = null, OutputInterface $output = null)
     {
         $console = $this->getConsoleApplication();
 
-        exit($console->run());
+        exit($console->run($input, $output));
     }
 
     /**
