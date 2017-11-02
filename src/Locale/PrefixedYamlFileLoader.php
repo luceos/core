@@ -11,9 +11,10 @@
 
 namespace Flarum\Locale;
 
+use Illuminate\Contracts\Translation\Loader;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 
-class PrefixedYamlFileLoader extends YamlFileLoader
+class PrefixedYamlFileLoader extends YamlFileLoader implements Loader
 {
     /**
      * {@inheritdoc}
@@ -33,5 +34,38 @@ class PrefixedYamlFileLoader extends YamlFileLoader
         }
 
         return $catalogue;
+    }
+
+    /**
+     * Add a new namespace to the loader.
+     *
+     * @param  string $namespace
+     * @param  string $hint
+     * @return void
+     */
+    public function addNamespace($namespace, $hint)
+    {
+        // TODO: Implement addNamespace() method.
+    }
+
+    /**
+     * Add a new JSON path to the loader.
+     *
+     * @param  string $path
+     * @return void
+     */
+    public function addJsonPath($path)
+    {
+        // TODO: Implement addJsonPath() method.
+    }
+
+    /**
+     * Get an array of all the registered namespaces.
+     *
+     * @return array
+     */
+    public function namespaces()
+    {
+        // TODO: Implement namespaces() method.
     }
 }
