@@ -158,7 +158,7 @@ abstract class AbstractFrontend
      */
     private function addTranslations(FrontendView $view)
     {
-        $translations = array_get($this->locales->getTranslator()->getCatalogue()->all(), 'messages', []);
+        $translations = array_get($this->locales->getTranslator()->parseKey('*'), 'messages', []);
 
         $translations = $this->filterTranslations($translations);
 

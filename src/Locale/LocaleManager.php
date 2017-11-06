@@ -11,66 +11,105 @@
 
 namespace Flarum\Locale;
 
-use Symfony\Component\Translation\Translator as SymfonyTranslator;
+use Illuminate\Contracts\Translation\Translator;
 
 class LocaleManager
 {
     /**
-     * @var SymfonyTranslator
+     * @var Translator
      */
     protected $translator;
 
+    /**
+     * @var array
+     */
     protected $locales = [];
 
+    /**
+     * @var array
+     */
     protected $js = [];
 
+    /**
+     * @var array
+     */
     protected $css = [];
 
     /**
-     * @param SymfonyTranslator $translator
+     * @param Translator $translator
      */
-    public function __construct(SymfonyTranslator $translator)
+    public function __construct(Translator $translator)
     {
         $this->translator = $translator;
     }
 
+    /**
+     * @return string
+     */
     public function getLocale()
     {
         return $this->translator->getLocale();
     }
 
+    /**
+     * @param $locale
+     */
     public function setLocale($locale)
     {
         $this->translator->setLocale($locale);
     }
 
+    /**
+     * @param $locale
+     * @param $name
+     */
     public function addLocale($locale, $name)
     {
         $this->locales[$locale] = $name;
     }
 
+    /**
+     * @return array
+     */
     public function getLocales()
     {
         return $this->locales;
     }
 
+    /**
+     * @param $locale
+     * @return bool
+     */
     public function hasLocale($locale)
     {
         return isset($this->locales[$locale]);
     }
 
+    /**
+     * @param $locale
+     * @param $file
+     * @param null $module
+     */
     public function addTranslations($locale, $file, $module = null)
     {
         $prefix = $module ? $module.'::' : '';
 
-        $this->translator->addResource('prefixed_yaml', compact('file', 'prefix'), $locale);
+        $this->translator->getLoader()->load(compact('file', 'prefix'), $locale);
     }
 
+    /**
+     * @param $locale
+     * @param $js
+     */
     public function addJsFile($locale, $js)
     {
         $this->js[$locale][] = $js;
     }
 
+    /**
+     * @param $locale
+     * @return array|mixed
+     */
     public function getJsFiles($locale)
     {
         $files = array_get($this->js, $locale, []);
@@ -84,11 +123,19 @@ class LocaleManager
         return $files;
     }
 
+    /**
+     * @param $locale
+     * @param $css
+     */
     public function addCssFile($locale, $css)
     {
         $this->css[$locale][] = $css;
     }
 
+    /**
+     * @param $locale
+     * @return array|mixed
+     */
     public function getCssFiles($locale)
     {
         $files = array_get($this->css, $locale, []);
@@ -103,7 +150,7 @@ class LocaleManager
     }
 
     /**
-     * @return SymfonyTranslator
+     * @return Translator
      */
     public function getTranslator()
     {
@@ -111,9 +158,9 @@ class LocaleManager
     }
 
     /**
-     * @param SymfonyTranslator $translator
+     * @param Translator $translator
      */
-    public function setTranslator(SymfonyTranslator $translator)
+    public function setTranslator(Translator $translator)
     {
         $this->translator = $translator;
     }

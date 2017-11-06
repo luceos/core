@@ -21,6 +21,7 @@ class PrefixedYamlFileLoader extends YamlFileLoader implements Loader
      */
     public function load($resource, $locale, $domain = 'messages')
     {
+        if (!isset($resource['file'])) debug_print_backtrace();
         $catalogue = parent::load($resource['file'], $locale, $domain);
 
         if (! empty($resource['prefix'])) {

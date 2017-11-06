@@ -15,6 +15,7 @@ use Flarum\Event\ConfigureLocales;
 use Flarum\Foundation\AbstractServiceProvider;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Translation\Translator;
+use Illuminate\Contracts\Translation\Translator as TranslatorContract;
 
 class LocaleServiceProvider extends AbstractServiceProvider
 {
@@ -47,7 +48,9 @@ class LocaleServiceProvider extends AbstractServiceProvider
 
             return $translator;
         });
+
         $this->app->alias('translator', Translator::class);
+        $this->app->alias('translator', TranslatorContract::class);
     }
 
     private function getDefaultLocale()
