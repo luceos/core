@@ -12,61 +12,30 @@
 namespace Flarum\Locale;
 
 use Illuminate\Contracts\Translation\Loader;
-use Symfony\Component\Translation\Loader\YamlFileLoader;
+use Illuminate\Translation\FileLoader;
+use Symfony\Component\Yaml\Parser;
 
-class PrefixedYamlFileLoader extends YamlFileLoader implements Loader
+class PrefixedYamlFileLoader extends FileLoader implements Loader
 {
     /**
-     * {@inheritdoc}
-     */
-    public function load($resource, $locale, $domain = 'messages')
-    {
-        if (!isset($resource['file'])) debug_print_backtrace();
-        $catalogue = parent::load($resource['file'], $locale, $domain);
-
-        if (! empty($resource['prefix'])) {
-            $messages = $catalogue->all($domain);
-
-            $prefixedKeys = array_map(function ($k) use ($resource) {
-                return $resource['prefix'].$k;
-            }, array_keys($messages));
-
-            $catalogue->replace(array_combine($prefixedKeys, $messages));
-        }
-
-        return $catalogue;
-    }
-
-    /**
-     * Add a new namespace to the loader.
+     * Load a locale from the given JSON file path.
      *
-     * @param  string $namespace
-     * @param  string $hint
-     * @return void
-     */
-    public function addNamespace($namespace, $hint)
-    {
-        // TODO: Implement addNamespace() method.
-    }
-
-    /**
-     * Add a new JSON path to the loader.
-     *
-     * @param  string $path
-     * @return void
-     */
-    public function addJsonPath($path)
-    {
-        // TODO: Implement addJsonPath() method.
-    }
-
-    /**
-     * Get an array of all the registered namespaces.
-     *
+     * @param  string  $locale
      * @return array
      */
-    public function namespaces()
+    protected function loadJsonPaths($locale)
     {
-        // TODO: Implement namespaces() method.
+        return collect(array_merge($this->jsonPaths, [$this->path]))
+            ->reduce(function ($output, $path) use ($locale) {
+                return $this->files->exists($full = "{$path}/{$locale}.yaml")
+                    ? array_merge($output,
+                        $this->yamlParser()->parse($this->files->get($full))
+                    ) : $output;
+            }, []);
+    }
+
+    protected function yamlParser()
+    {
+        return new Parser();
     }
 }

@@ -14,6 +14,7 @@ namespace Flarum\Locale;
 use Flarum\Event\ConfigureLocales;
 use Flarum\Foundation\AbstractServiceProvider;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Translation\Translator;
 use Illuminate\Contracts\Translation\Translator as TranslatorContract;
 
@@ -39,11 +40,11 @@ class LocaleServiceProvider extends AbstractServiceProvider
         $this->app->singleton(LocaleManager::class);
         $this->app->alias(LocaleManager::class, 'flarum.localeManager');
 
-        $this->app->singleton('translator', function () {
+        $this->app->singleton('translator', function ($app) {
             $defaultLocale = $this->getDefaultLocale();
 
             // @todo default locale is set as locale and as fallback!
-            $translator = new Translator(new PrefixedYamlFileLoader(), $defaultLocale);
+            $translator = new Translator(new PrefixedYamlFileLoader(new Filesystem(), base_path()), $defaultLocale);
             $translator->setFallback($defaultLocale);
 
             return $translator;
