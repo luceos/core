@@ -52,7 +52,7 @@ class InstallController implements ControllerInterface
 
         $data = new DefaultsDataProvider;
 
-        $host = array_get($input, 'mysqlHost');
+        $host = env('DB_HOST') ?? array_get($input, 'mysqlHost');
         $port = '3306';
 
         if (str_contains($host, ':')) {
@@ -62,10 +62,10 @@ class InstallController implements ControllerInterface
         $data->setDatabaseConfiguration([
             'driver'   => 'mysql',
             'host'     => $host,
-            'database' => array_get($input, 'mysqlDatabase'),
-            'username' => array_get($input, 'mysqlUsername'),
-            'password' => array_get($input, 'mysqlPassword'),
-            'prefix'   => array_get($input, 'tablePrefix'),
+            'database' => env('DB_DATABASE') ?? array_get($input, 'mysqlDatabase'),
+            'username' => env('DB_USERNAME') ?? array_get($input, 'mysqlUsername'),
+            'password' => env('DB_PASSWORD') ?? array_get($input, 'mysqlPassword'),
+            'prefix'   => env('DB_PREFIX') ?? array_get($input, 'tablePrefix'),
             'port'     => $port,
         ]);
 
